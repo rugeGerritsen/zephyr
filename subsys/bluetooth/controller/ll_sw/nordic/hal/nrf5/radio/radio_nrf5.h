@@ -45,5 +45,7 @@
 #endif
 #if defined(DPPI_PRESENT)
 #include "radio_nrf5_dppi.h"
+#else
+#error "PPI or DPPI abstractions missing."
 #endif
 #include "radio_nrf5_txp.h"
