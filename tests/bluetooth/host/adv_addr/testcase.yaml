@@ -1,0 +1,14 @@
+common:
+  tags: bluetooth
+tests:
+  bluetooth.host.adv_addr:
+    platform_allow: native_posix
+  bluetooth.host.adv_addr_privacy:
+    platform_allow: native_posix
+    extra_args: CONF_FILE=prj_0.conf
+  bluetooth.host.adv_addr_scan_identity:
+    platform_allow: native_posix
+    extra_args: CONF_FILE=prj_scan_identity.conf
+  bluetooth.host.adv_addr_privacy_scan_identity:
+    platform_allow: native_posix
+    extra_args: CONF_FILE=prj_scan_identity.conf
