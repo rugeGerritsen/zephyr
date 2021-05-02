@@ -14,13 +14,21 @@ static bt_addr_t random_addr;
 static bool bdaddr_valid;
 static bt_addr_t bdaddr;
 
+bool mocked_controller_scan_enabled(void)
+{
+	return scan_enabled;
+}
+
+bool mocked_controller_scan_type_active(void)
+{
+	return scan_type_active;
+}
+
 void mocked_controller_random_addr_get(bt_addr_t *addr, bool *valid)
 {
 	memcpy(addr, &random_addr, sizeof(random_addr));
 	*valid = random_addr_valid;
 }
-
-
 
 /* Command handler structure for cmd_handle(). */
 struct cmd_handler {
