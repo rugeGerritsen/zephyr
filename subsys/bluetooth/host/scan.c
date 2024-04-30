@@ -336,12 +336,14 @@ int bt_le_scan_update(bool fast_scan)
 	if (IS_ENABLED(CONFIG_BT_CENTRAL)) {
 		struct bt_conn *conn;
 
-		/* don't restart scan if we have pending connection */
-		conn = bt_conn_lookup_state_le(BT_ID_DEFAULT, NULL,
-					       BT_CONN_INITIATING);
-		if (conn) {
-			bt_conn_unref(conn);
-			return 0;
+		if (!BT_LE_STATES_SCAN_INIT(bt_dev.le.states)) {
+			/* don't restart scan if we have pending connection */
+			conn = bt_conn_lookup_state_le(BT_ID_DEFAULT, NULL,
+						BT_CONN_INITIATING);
+			if (conn) {
+				bt_conn_unref(conn);
+				return 0;
+			}
 		}
 
 		conn = bt_conn_lookup_state_le(BT_ID_DEFAULT, NULL,
@@ -388,9 +390,11 @@ static void check_pending_conn(const bt_addr_le_t *id_addr,
 		return;
 	}
 
-	if (atomic_test_bit(bt_dev.flags, BT_DEV_SCANNING) &&
-	    bt_le_scan_set_enable(BT_HCI_LE_SCAN_DISABLE)) {
-		goto failed;
+	if (!BT_LE_STATES_SCAN_INIT(bt_dev.le.states)) {
+		if (atomic_test_bit(bt_dev.flags, BT_DEV_SCANNING) &&
+		   bt_le_scan_set_enable(BT_HCI_LE_SCAN_DISABLE)) {
+			goto failed;
+		}
 	}
 
 	bt_addr_le_copy(&conn->le.resp_addr, addr);
