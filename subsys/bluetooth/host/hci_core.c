@@ -1174,11 +1174,15 @@ static void le_conn_complete_cancel(uint8_t err)
 		 * as application may choose to change it from
 		 * callback.
 		 */
-		bt_conn_set_state(conn, BT_CONN_DISCONNECTED);
-		/* Check if device is marked for autoconnect. */
-		if (atomic_test_bit(conn->flags, BT_CONN_AUTO_CONNECT)) {
-			/* Restart passive scanner for device */
-			bt_conn_set_state(conn, BT_CONN_SCAN_BEFORE_INITIATING);
+		if (conn->state == BT_CONN_INITIATING) {
+			bt_le_create_conn(conn);
+		} else {
+			bt_conn_set_state(conn, BT_CONN_DISCONNECTED);
+			/* Check if device is marked for autoconnect. */
+			if (atomic_test_bit(conn->flags, BT_CONN_AUTO_CONNECT)) {
+				/* Restart passive scanner for device */
+				bt_conn_set_state(conn, BT_CONN_SCAN_BEFORE_INITIATING);
+			}
 		}
 	} else {
 		if (atomic_test_bit(conn->flags, BT_CONN_AUTO_CONNECT)) {
@@ -4226,6 +4230,8 @@ int bt_disable(void)
 
 	/* Some functions rely on checking this bitfield */
 	memset(bt_dev.supported_commands, 0x00, sizeof(bt_dev.supported_commands));
+
+	bt_dev.id_count = 0;
 
 	/* If random address was set up - clear it */
 	bt_addr_le_copy(&bt_dev.random_addr, BT_ADDR_LE_ANY);
