@@ -231,6 +231,9 @@ int bt_enable(bt_ready_cb_t cb);
  *
  * Disable Bluetooth. Can't be called before bt_enable has completed.
  *
+ * When @kconfig{CONFIG_BT_SETTINGS} is not enabled, this API
+ * will clear all the previously configured identities.
+ *
  * Close and release HCI resources. Result is architecture dependent.
  *
  * @return Zero on success or (negative) error code otherwise.
