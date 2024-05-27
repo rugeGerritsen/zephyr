@@ -4236,6 +4236,10 @@ int bt_disable(void)
 	/* Reset ID count to 0 so that a new default identity can be set. */
 	bt_dev.id_count = 0;
 
+#if defined(CONFIG_BT_SMP)
+	bt_dev.le.rl_entries = 0;
+#endif
+
 	/* If random address was set up - clear it */
 	bt_addr_le_copy(&bt_dev.random_addr, BT_ADDR_LE_ANY);
 
